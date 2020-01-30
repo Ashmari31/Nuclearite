@@ -26,7 +26,6 @@ float get_temp()
     float tempf = 0;
     
     std::string phrase = exec("cat  /sys/bus/iio/devices/iio\:device0/in_temp_input");
-    std::cout<< phrase << std::endl;
     char phrase2[phrase.size()+1];
     strcpy(phrase2, phrase.c_str());
     temp = atoi(phrase2);
@@ -40,7 +39,6 @@ float get_pressure()
     double press2 = 0;
     
     std::string phrase3 = exec("cat  /sys/bus/iio/devices/iio\:device0/in_pressure_input");
-    std::cout<< phrase3 << std::endl;
     char phrase4[phrase3.size()+1];
     strcpy(phrase4, phrase3.c_str());
     press = atoi(phrase4);
