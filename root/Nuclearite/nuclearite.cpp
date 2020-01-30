@@ -5,7 +5,7 @@
 #include <array>
 #include <stdexcept>
 #include <cstring>
-
+#include <sstream>
 #include <sqlite3.h>
 
 int exec(const char* cmd) {
@@ -38,7 +38,8 @@ float get_pressure()
 int main ()
 {
 
-	sqlite3* DB;
+	sqlite3* DB = NULL;
+	std::ostringstream strtemp, strpress;
 
 	int exit = 0;
 	exit = sqlite3_open("nuclearite.sqlite3", &DB); 	
@@ -48,18 +49,21 @@ int main ()
     	} 
 
 	std::cout << "Opened Database Successfully!" << std::endl; 
-	std::string request, messageError;
+	std::string request, req;
+	char **messageError;
 
 	float temp = get_temp();
 	double pressure = get_pressure();
 	std::cout<< temp <<" °C"<<std::endl;
-	req = "INSERT INTO mesures(temperature, pressure, date_mesure, fk_env) VALUES (" + temp + ", " + pressure  + ", DATETIME(), 0);";
+	strtemp << temp;
+	strpress << pressure;
 
-	exit = DB->sqlite3_exec(DB, req.c_str(), NULL, 0, &messageError);
+	req = "INSERT INTO mesures(temperature, pressure, date_mesure, fk_env) VALUES (" + strtemp.str() + ", " + strpress.str()  + ", DATETIME(), 0);";
+	exit = sqlite3_exec(DB, req.c_str(), NULL, 0, messageError);
 	
 	if (exit != SQLITE_OK) {
         	std::cerr << "Error Create Table" << std::endl;
-        	sqlite3_free(messaggeError);
+        	//sqlite3_free(messageError);
     	}
     	else
     	    std::cout << "Table created Successfully" << std::endl;
