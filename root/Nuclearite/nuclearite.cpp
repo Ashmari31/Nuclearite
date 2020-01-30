@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <cstring>
 
+#include <sqlite3.h>
+
 int exec(const char* cmd) {
     std::array<char, 128> buffer;
     std::string result;
@@ -35,7 +37,36 @@ float get_pressure()
 
 int main ()
 {
-	std::cout<<get_temp()<<" °C"<<std::endl;
-    	std::cout<<get_pressure()<<" Pa"<<std::endl;
+
+	sqlite3* DB;
+
+	int exit = 0;
+	exit = sqlite3_open("nuclearite.sqlite3", &DB); 	
+	if (exit) { 
+        	std::cerr << "Error open DB " << sqlite3_errmsg(DB) << std::endl; 
+	        return (-1); 
+    	} 
+
+	std::cout << "Opened Database Successfully!" << std::endl; 
+	std::string request, messageError;
+
+	float temp = get_temp();
+	double pressure = get_pressure();
+	std::cout<< temp <<" °C"<<std::endl;
+	req = "INSERT INTO mesures(temperature, pressure, date_mesure, fk_env) VALUES (" + temp + ", " + pressure  + ", DATETIME(), 0);";
+
+	exit = DB->sqlite3_exec(DB, req.c_str(), NULL, 0, &messageError);
+	
+	if (exit != SQLITE_OK) {
+        	std::cerr << "Error Create Table" << std::endl;
+        	sqlite3_free(messaggeError);
+    	}
+    	else
+    	    std::cout << "Table created Successfully" << std::endl;
+
+
+//    	std::cout<<get_pressure()<<" Pa"<<std::endl;	
+	
+	sqlite3_close(DB); 
 }
 
