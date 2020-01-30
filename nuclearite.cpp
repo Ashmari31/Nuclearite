@@ -18,7 +18,7 @@ int exec(const char* cmd) {
     }
 
     char phrase[result.size()+1];
-    strcpy(phrase, phrase.c_str());
+    strcpy(phrase, result.c_str());
     return atoi(phrase);
 }
 
