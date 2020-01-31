@@ -30,7 +30,7 @@ float get_temp()
     return (float)exec("cat /sys/bus/iio/devices/iio\:device0/in_temp_input")/1000;
 }
 
-float get_pressure()
+double get_pressure()
 {
 	return (double)exec("cat /sys/bus/iio/devices/iio\:device0/in_pressure_input")/1000;
 }
@@ -59,10 +59,11 @@ int main ()
 	strpress << pressure;
 
 	req = "INSERT INTO mesures(temperature, pressure, date_mesure, fk_env) VALUES (" + strtemp.str() + ", " + strpress.str()  + ", DATETIME(), 0);";
-	exit = sqlite3_exec(DB, req.c_str(), NULL, 0, messageError);
-	
+	std::cout<<req.c_str()<<std::endl;	
+	exit = sqlite3_exec(DB, req.c_str(), NULL, NULL, messageError);	
+
 	if (exit != SQLITE_OK) {
-        	std::cerr << "Error Create Table" << std::endl;
+        	std::cerr << "Error during table creation" << std::endl;
         	//sqlite3_free(messageError);
     	}
     	else
